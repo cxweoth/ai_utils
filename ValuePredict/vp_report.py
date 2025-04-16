@@ -3,11 +3,19 @@ import shap
 import pandas as pd
 import matplotlib.pyplot as plt
 from autogluon.tabular import TabularPredictor
-
+from sklearn.model_selection import train_test_split
 
 class ValuePredictReport:
     def __init__(self, train_data_path, id_col, label, report_folder):
-        self.train_data = pd.read_csv(train_data_path)
+        train_full_data = pd.read_csv(train_data_path)
+        X = train_full_data.drop(columns=[id_col, label])
+        y = train_full_data[label]
+
+        # split train and val
+        X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+        
+        self.train_data = pd.concat([X_train, y_train], axis=1)
+        self.val_data = pd.concat([X_val, y_val], axis=1)
         self.id_col = id_col
         self.label = label
         self.report_folder = report_folder
@@ -16,8 +24,6 @@ class ValuePredictReport:
         self.eval_metric = "mean_squared_error"
 
         # 移除 ID 欄位並保存
-        self.train_id = self.train_data[self.id_col]
-        self.train_data.drop(columns=[self.id_col], inplace=True)
         self.original_features = [col for col in self.train_data.columns if col != self.label]
         self.vp_report_lines = []
 
@@ -34,7 +40,7 @@ class ValuePredictReport:
 
     def generate_basic_part(self):
         predictor = TabularPredictor(label=self.label, path=self.model_path, eval_metric=self.eval_metric)\
-            .fit(self.train_data)
+            .fit(train_data=self.train_data, tuning_data=self.val_data)
 
         leaderboard_df = predictor.leaderboard(self.train_data, silent=True)
         feature_importance_df = predictor.feature_importance(self.train_data)

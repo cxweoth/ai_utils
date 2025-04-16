@@ -178,3 +178,5 @@ cython_debug/
 ValuePredict/data/
 ValuePredict/report/
 ValuePredict/hw2.py
+
+.DS_Store
