@@ -1,0 +1,1 @@
+- [Fast API MCP](https://github.com/tadata-org/fastapi_mcp): 可以把 api 直接當作 mcp 給 LLM 使用，不用多做橋接

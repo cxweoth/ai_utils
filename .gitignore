@@ -172,3 +172,9 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+
+# ValuePredict
+ValuePredict/data/
+ValuePredict/report/
+ValuePredict/hw2.py

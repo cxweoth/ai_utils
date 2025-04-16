@@ -1,0 +1,2 @@
+autogluon==1.2
+shap==0.47.1
